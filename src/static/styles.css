@@ -50,6 +50,16 @@ body {
   font-size: 0.9rem;
 }
 
+body.dark-mode {
+  --background: #121212;
+  --surface: #1e1e1e;
+  --text-primary: #f5f5f5;
+  --text-secondary: #c7c7c7;
+  --border: #3a3a3a;
+  --border-light: #2a2a2a;
+  --border-focus: #4f4f4f;
+}
+
 header {
   text-align: center;
   padding: 12px 0;
@@ -617,6 +627,9 @@ footer {
   position: absolute;
   top: 10px;
   right: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 #user-status {
