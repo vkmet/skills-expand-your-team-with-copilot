@@ -601,6 +601,12 @@ document.addEventListener("DOMContentLoaded", () => {
         `
         }
       </div>
+      <div class="share-section">
+        <span class="share-label">Share:</span>
+        <button class="share-button share-twitter" data-activity="${name}" aria-label="Share on X (Twitter)">𝕏</button>
+        <button class="share-button share-facebook" data-activity="${name}" aria-label="Share on Facebook">f</button>
+        <button class="share-button share-copy" data-activity="${name}" aria-label="Copy link">🔗</button>
+      </div>
     `;
 
     // Add click handlers for delete buttons
@@ -618,6 +624,17 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
     }
+
+    // Add click handlers for share buttons
+    activityCard.querySelector(".share-twitter").addEventListener("click", () => {
+      shareActivityOnTwitter(name, details.description, formatSchedule(details));
+    });
+    activityCard.querySelector(".share-facebook").addEventListener("click", () => {
+      shareActivityOnFacebook(name);
+    });
+    activityCard.querySelector(".share-copy").addEventListener("click", (event) => {
+      copyActivityLink(name, event.target);
+    });
 
     activitiesList.appendChild(activityCard);
   }
@@ -829,6 +846,45 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
     );
+  }
+
+  // Build a shareable URL for an activity
+  function getActivityUrl(activityName) {
+    const url = new URL(window.location.href);
+    url.search = "";
+    url.searchParams.set("activity", activityName);
+    return url.toString();
+  }
+
+  // Share activity on Twitter/X
+  function shareActivityOnTwitter(name, description, schedule) {
+    const text = `Check out "${name}" at Mergington High School!\n${description}\nSchedule: ${schedule}`;
+    const tweetUrl =
+      "https://twitter.com/intent/tweet?text=" + encodeURIComponent(text) +
+      "&url=" + encodeURIComponent(getActivityUrl(name));
+    window.open(tweetUrl, "_blank", "noopener,noreferrer");
+  }
+
+  // Share activity on Facebook
+  function shareActivityOnFacebook(name) {
+    const shareUrl =
+      "https://www.facebook.com/sharer/sharer.php?u=" +
+      encodeURIComponent(getActivityUrl(name));
+    window.open(shareUrl, "_blank", "noopener,noreferrer");
+  }
+
+  // Copy activity link to clipboard
+  function copyActivityLink(name, buttonEl) {
+    const link = getActivityUrl(name);
+    navigator.clipboard.writeText(link).then(() => {
+      const original = buttonEl.textContent;
+      buttonEl.textContent = "✔";
+      setTimeout(() => {
+        buttonEl.textContent = original;
+      }, 1500);
+    }).catch(() => {
+      showMessage("Could not copy link. Please copy the URL manually.", "error");
+    });
   }
 
   // Show message function
